@@ -9,6 +9,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return MaterialApp(
+      title: "project supabase",
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.pinkAccent),
+      ),
+    );
   }
 }
