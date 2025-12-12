@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -26,19 +27,26 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() => _isUploading = true);
 
     try {
-      final fileName =
+        final fileName =
           '${DateTime.now().millisecondsSinceEpoch}_${picked.name}';
       final filePath = 'uploads/$fileName';
-      final file = File(picked.path);
-
-      // upload
-      await supabase.storage
-          .from('kampushub-images')
-          .upload(filePath, file);
+        if (kIsWeb) {
+            final bytes = await picked.readAsBytes();
+            await supabase.storage
+            .from('bucket_images')
+            .uploadBinary(filePath, bytes,
+            fileOptions: const FileOptions(
+                contentType: 'image/jpeg',
+            )
+            );
+        }else {
+            final file = File(picked.path);
+            await supabase.storage.from('bucket_images').upload(filePath, file);
+        }
 
       // ambil URL public
       final publicUrl = supabase.storage
-          .from('kampushub-images')
+          .from('bucket_images')
           .getPublicUrl(filePath);
 
       setState(() {
@@ -77,8 +85,8 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Text('Pilih & Upload Gambar'),
             ),
 
+            //Menampilkan image yang di upload
             const SizedBox(height: 24),
-            // Menampilkan image jika sudah ada URL
             if (_publicImageUrl != null) ...[
               const Text('Gambar dari Public URL:'),
               const SizedBox(height: 8),
