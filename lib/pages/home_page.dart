@@ -68,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Supabase Image Upload'),
+        title: const Text('Upload ke Public Bucket'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
