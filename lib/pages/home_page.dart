@@ -19,9 +19,9 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _pickAndUploadToPublicBucket() async {
     final picker = ImagePicker();
 
+    // pilih gambar
     final picked = await picker.pickImage(source: ImageSource.gallery);
     if (picked == null) return;
-
 
     setState(() => _isUploading = true);
 
@@ -31,52 +31,66 @@ class _MyHomePageState extends State<MyHomePage> {
       final filePath = 'uploads/$fileName';
       final file = File(picked.path);
 
-      // Upload ke bucket
-      await supabase.storage.from('kampushub-images').upload(filePath, file);
+      // upload
+      await supabase.storage
+          .from('kampushub-images')
+          .upload(filePath, file);
 
-      // Ambil URL public
-      final publicUrl =
-          supabase.storage.from('kampushub-images').getPublicUrl(filePath);
+      // ambil URL public
+      final publicUrl = supabase.storage
+          .from('kampushub-images')
+          .getPublicUrl(filePath);
 
-      setState(() => _publicImageUrl = publicUrl);
+      setState(() {
+        _publicImageUrl = publicUrl;
+      });
     } catch (e) {
-      debugPrint('Error upload: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal upload: $e')),
+          SnackBar(content: Text("Upload gagal: $e")),
         );
       }
     } finally {
-      if (mounted) {
-        setState(() => _isUploading = false);
-      }
+      if (mounted) setState(() => _isUploading = false);
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Supabase Image Upload')),
-      body: Center(
+      appBar: AppBar(
+        title: const Text('Supabase Image Upload'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _isUploading
-                ? const CircularProgressIndicator()
-                : ElevatedButton(
-                    onPressed: _pickAndUploadToPublicBucket,
-                    child: const Text("Upload ke Supabase"),
-                  ),
+            // Progress upload
+            if (_isUploading) const LinearProgressIndicator(),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
 
-            if (_publicImageUrl != null)
-              Image.network(
-                _publicImageUrl!,
-                width: 200,
-                height: 200,
-                fit: BoxFit.cover,
+            //Button untuk pilih image
+            ElevatedButton(
+              onPressed: _isUploading ? null : _pickAndUploadToPublicBucket,
+              child: const Text('Pilih & Upload Gambar'),
+            ),
+
+            const SizedBox(height: 24),
+            // Menampilkan image jika sudah ada URL
+            if (_publicImageUrl != null) ...[
+              const Text('Gambar dari Public URL:'),
+              const SizedBox(height: 8),
+              Expanded(
+                child: Image.network(_publicImageUrl!),
               ),
+              const SizedBox(height: 8),
+              SelectableText(
+                _publicImageUrl!,
+                style: const TextStyle(fontSize: 12),
+              ),
+            ],
           ],
         ),
       ),
