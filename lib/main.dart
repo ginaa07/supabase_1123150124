@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_1123150124/pages/home_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 const supabaseUrl = 'https://abrcktepwhjxvljdplay.supabase.co';
