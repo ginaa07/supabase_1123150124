@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-    title: 'Supabase Foto', 
+    title: 'Supabase Foto Regina safarina', 
     home: MyHomePage(),
     );
   }
