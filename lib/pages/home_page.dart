@@ -22,6 +22,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final picked = await picker.pickImage(source: ImageSource.gallery);
     if (picked == null) return;
 
+
     setState(() => _isUploading = true);
 
     try {
@@ -55,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Upload Gambar')),
+      appBar: AppBar(title: const Text('Supabase Image Upload')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
